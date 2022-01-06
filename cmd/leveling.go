@@ -19,7 +19,7 @@ var levelingCmd = &cobra.Command{
 The "leveling" command is used to check, enable or disable the active leveling of your printer. 
 It is important that you do a manual leveling from the printer menu, after you have disabled the active leveling and before you start your first print job.
 
-Check the available commands below. You get more help for each command when you add --help to the command line.
+Note, that the printer will restart after you send the command to enable or disable the active leveling.
 
 UltiTuner uses ssh to connect to the printer, so you need to enable the "Developer Mode" in the printer menu before. 
 `,
@@ -42,10 +42,10 @@ UltiTuner uses ssh to connect to the printer, so you need to enable the "Develop
 		}
 
 		if len(args) == 1 && args[0] == "on" {
-			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.NEVER/self.__probing_mode = ProbeMode.DETAILED/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
+			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.NEVER/self.__probing_mode = ProbeMode.DETAILED/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py && systemctl restart griffin.printer")
 			fmt.Println("Active Leveling turned ON")
 		} else if len(args) == 1 && args[0] == "off" {
-			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
+			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py && systemctl restart griffin.printer")
 			fmt.Println("Active Leveling turned OFF")
 			fmt.Println("Important: Do a manual leveling from the menu before you start your first print job!")
 		} else {

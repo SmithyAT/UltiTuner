@@ -9,13 +9,15 @@ import (
 var printerIP string
 
 var rootCmd = &cobra.Command{
-	Version: "0.3",
+	Version: "0.3.1",
 	Use:     "ultituner",
 	Short:   "UltiTuner, the small helper tool",
 	Long: `UltiTuner - Written by Christian Schmied aka Smithy (https://github.com/SmithyAT/UltiTuner)
 
 UltiTuner is a small helper tool to configure functions for Ultimaker S-Line printers, which are not available via the printers menu.
 This tool uses ssh to connect to the printer, so you need to enable the "Developer Mode" in the printer menu before.
+
+Check the available commands below. You get more help for each command when you add --help to the command line.
 
 DISCLAIMER: 
 The software was created and tested with the maximum care. But since non-official methods are used to change the firmware,
