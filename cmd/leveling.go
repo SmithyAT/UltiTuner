@@ -14,11 +14,15 @@ var levelingCmd = &cobra.Command{
 	ValidArgs:             []string{"on", "off"},
 	DisableFlagsInUseLine: true,
 	Short:                 "Enable or disable the active leveling on the printer",
-	Long: `Enable or disable the active leveling on the printer.
+	Long: `UltiTuner - Tune the Active Leveling
 
-You need to enable the "Developer Mode" on your printer, that ultituner is able to connect to your printer.
+The "leveling" command is used to check, enable or disable the active leveling of your printer. 
+It is important that you do a manual leveling from the printer menu, after you have disabled the active leveling and before you start your first print job.
 
-When you call the command leveling without the on or off argument, the current status of active leveling is shown.`,
+Check the available commands below. You get more help for each command when you add --help to the command line.
+
+UltiTuner uses ssh to connect to the printer, so you need to enable the "Developer Mode" in the printer menu before. 
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		client := sshConnect()
@@ -43,6 +47,7 @@ When you call the command leveling without the on or off argument, the current s
 		} else if len(args) == 1 && args[0] == "off" {
 			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			fmt.Println("Active Leveling turned OFF")
+			fmt.Println("Important: Do a manual leveling from the menu before you start your first print job!")
 		} else {
 			result := sshCmd(client, "grep 'self.__probing_mode = ProbeMode.' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			if strings.Contains(result, "DETAILED") {

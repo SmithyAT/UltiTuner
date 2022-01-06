@@ -9,14 +9,18 @@ import (
 var printerIP string
 
 var rootCmd = &cobra.Command{
-	Version: "20220106",
+	Version: "0.3",
 	Use:     "ultituner",
 	Short:   "UltiTuner, the small helper tool",
-	Long: `UltiTuner - Written by Christian Schmied aka Smithy
-UltiTuner is a small helper tool, to configure and manage printer configurations which are not available via the printers menu. 
+	Long: `UltiTuner - Written by Christian Schmied aka Smithy (https://github.com/SmithyAT/UltiTuner)
 
-Disclaimer: This tool uses the ssh connection (developer mode) to connect to your printer and modifies directly some files of the firmware.
-Use this tool at your own risk!`,
+UltiTuner is a small helper tool to configure functions for Ultimaker S-Line printers, which are not available via the printers menu.
+This tool uses ssh to connect to the printer, so you need to enable the "Developer Mode" in the printer menu before.
+
+DISCLAIMER: 
+The software was created and tested with the maximum care. But since non-official methods are used to change the firmware,
+it could happen under certain circumstances that the printer no longer works as usual. Neither I personally nor Ultimaker is responsible for this.
+USE THIS TOOL AT YOUR OWN RISK AND RESPONSIBILITY`,
 }
 
 func Execute() {
