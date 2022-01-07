@@ -17,12 +17,11 @@ var levelingCmd = &cobra.Command{
 	Long: `UltiTuner - Tune the Active Leveling
 
 The "leveling" command is used to check, enable or disable the active leveling of your printer. 
-It is important that you do a manual leveling from the printer menu, after you have disabled the active leveling and before you start your first print job.
+You must do manual leveling from the printer menu after you have disabled the active leveling and before you start your first print job.
 
-Note, that the printer will restart after you send the command to enable or disable the active leveling.
+Note that the printer will restart after you send the command to enable or disable the active leveling.
 
-UltiTuner uses ssh to connect to the printer, so you need to enable the "Developer Mode" in the printer menu before. 
-`,
+This tool uses ssh to connect to the printer, so you need to first enable the "Developer Mode" in the printer menu.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		client := sshConnect()
