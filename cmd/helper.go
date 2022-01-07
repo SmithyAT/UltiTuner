@@ -32,21 +32,28 @@ func sshCmd(c *goph.Client, cmd string) string {
 		fmt.Println("ERROR: Something went wrong - unable to complete the action.")
 		os.Exit(1)
 	}
-	return string(out)
+	result := string(out)
+	result = strings.TrimSuffix(result, "\n")
+	return result
 }
 
 func getPrinterProperties(c *goph.Client) string {
 	result := sshCmd(c, "grep 'machine_name' /var/lib/griffin/system_preferences.json | cut -d':' -f2 | sed 's/[\"|,| ]//g' && cat /etc/ultimaker_firmware | sed 's/article_numbers/model/g'")
-	return result[:len(result)-1]
+	return result
+}
+
+func getVersion(c *goph.Client) (model string, version int) {
+	result := sshCmd(c, "echo $(grep article_numbers /etc/ultimaker_firmware | sed 's/article_numbers: //g'):$(grep version /etc/ultimaker_firmware | sed 's/version: //g' | cut -c1)")
+	details := strings.Split(result, ":")
+	tmpVersion, _ := strconv.Atoi(details[1])
+	return details[0], tmpVersion
 }
 
 func checkVersion(c *goph.Client, requiredVersion int) bool {
-	result := sshCmd(c, "echo $(grep article_numbers /etc/ultimaker_firmware | sed 's/article_numbers: //g'):$(grep version /etc/ultimaker_firmware | sed 's/version: //g' | cut -c1)")
-	details := strings.Split(strings.ReplaceAll(result, "\n", ""), ":")
-
 	unsupportedPrinters := []string{"9066", "9511"}
-	version, _ := strconv.Atoi(details[1])
-	if contains(unsupportedPrinters, details[0]) || version < requiredVersion {
+
+	model, printerVersion := getVersion(c)
+	if contains(unsupportedPrinters, model) || printerVersion < requiredVersion {
 		return false
 	} else {
 		return true

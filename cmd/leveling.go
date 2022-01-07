@@ -19,16 +19,15 @@ var levelingCmd = &cobra.Command{
 The "leveling" command is used to check, enable or disable the active leveling of your printer. 
 You must do manual leveling from the printer menu after you have disabled the active leveling and before you start your first print job.
 
-Note that the printer will restart after you send the command to enable or disable the active leveling.
-
-This tool uses ssh to connect to the printer, so you need to first enable the "Developer Mode" in the printer menu.`,
+Note that you need to restart the printer after any configuration change. You can use the "restart" command or set the "-r" flag to restart it automatically.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		restart, _ := cmd.Flags().GetBool("restart")
 
 		client := sshConnect()
 		defer func(client *goph.Client) {
 			err := client.Close()
 			if err != nil {
-				fmt.Println("ERROR: Something went wrong - unable to complete the action.")
+				fmt.Println("ERROR: Something went wrong - unable to complete the action")
 			}
 		}(client)
 		fmt.Println(getPrinterProperties(client))
@@ -41,12 +40,22 @@ This tool uses ssh to connect to the printer, so you need to first enable the "D
 		}
 
 		if len(args) == 1 && args[0] == "on" {
-			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.NEVER/self.__probing_mode = ProbeMode.DETAILED/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py && systemctl restart griffin.printer")
+			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.NEVER/self.__probing_mode = ProbeMode.DETAILED/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			fmt.Println("Active Leveling turned ON")
+			if restart {
+				fmt.Print("Restarting griffin printer service...")
+				sshCmd(client, "systemctl restart griffin.printer")
+				fmt.Println("DONE")
+			}
 		} else if len(args) == 1 && args[0] == "off" {
-			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py && systemctl restart griffin.printer")
+			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			fmt.Println("Active Leveling turned OFF")
 			fmt.Println("Important: Do a manual leveling from the menu before you start your first print job!")
+			if restart {
+				fmt.Print("Restarting griffin printer service...")
+				sshCmd(client, "systemctl restart griffin.printer")
+				fmt.Println("DONE")
+			}
 		} else {
 			result := sshCmd(client, "grep 'self.__probing_mode = ProbeMode.' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			if strings.Contains(result, "DETAILED") {
@@ -62,5 +71,6 @@ This tool uses ssh to connect to the printer, so you need to first enable the "D
 
 func init() {
 	rootCmd.AddCommand(levelingCmd)
+	levelingCmd.Flags().BoolP("restart", "r", false, "Restart the printer service after the change")
 
 }
