@@ -8,15 +8,7 @@ import (
 	"strings"
 )
 
-func contains(s []string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
-	}
-	return false
-}
-
+// Connect and return the client
 func sshConnect() *goph.Client {
 	client, err := goph.NewUnknown("root", printerIP, goph.Password("ultimaker"))
 	if err != nil {
@@ -26,6 +18,7 @@ func sshConnect() *goph.Client {
 	return client
 }
 
+// Exec remote commands and return the result
 func sshCmd(c *goph.Client, cmd string) string {
 	out, err := c.Run(cmd)
 	if err != nil {
@@ -37,25 +30,32 @@ func sshCmd(c *goph.Client, cmd string) string {
 	return result
 }
 
-func getPrinterProperties(c *goph.Client) string {
+// Fetch the printer name, model and firmware version and output the result
+func printPrinterProperties(c *goph.Client) {
 	result := sshCmd(c, "grep 'machine_name' /var/lib/griffin/system_preferences.json | cut -d':' -f2 | sed 's/[\"|,| ]//g' && cat /etc/ultimaker_firmware | sed 's/article_numbers/model/g'")
-	return result
+	fmt.Println("--------------------")
+	fmt.Println(result)
+	fmt.Println("--------------------")
 }
 
-func getVersion(c *goph.Client) (model string, version int) {
-	result := sshCmd(c, "echo $(grep article_numbers /etc/ultimaker_firmware | sed 's/article_numbers: //g'):$(grep version /etc/ultimaker_firmware | sed 's/version: //g' | cut -c1)")
-	details := strings.Split(result, ":")
-	tmpVersion, _ := strconv.Atoi(details[1])
-	return details[0], tmpVersion
-}
+// The ssh command must return a string true if compatible and false if not (...&& echo true || echo false)
+func checkCompatibility(c *goph.Client, cmd string) {
+	fmt.Print("Checking printer/firmware compatibility.....")
+	printerVersion := sshCmd(c, "grep article_numbers /etc/ultimaker_firmware | sed 's/article_numbers: //g'")
 
-func checkVersion(c *goph.Client, requiredVersion int) bool {
-	unsupportedPrinters := []string{"9066", "9511"}
-
-	model, printerVersion := getVersion(c)
-	if contains(unsupportedPrinters, model) || printerVersion < requiredVersion {
-		return false
+	result := sshCmd(c, cmd)
+	supported, _ := strconv.ParseBool(result)
+	if supported && printerVersion != "9066" && printerVersion != "9511" {
+		fmt.Println("done, compatible")
 	} else {
-		return true
+		fmt.Println("done, but not compatible")
+		os.Exit(1)
 	}
+}
+
+// Restart griffin service
+func restartGriffin(c *goph.Client) {
+	fmt.Print("Restarting griffin printer service.....")
+	sshCmd(c, "systemctl restart griffin.printer")
+	fmt.Println("done")
 }

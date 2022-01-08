@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/melbahja/goph"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var rebootCmd = &cobra.Command{
@@ -15,8 +14,11 @@ var rebootCmd = &cobra.Command{
 	Long: `UltiTuner
 
 The "reboot" command is used to reboot the linux system of the printer.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// Connect to the printer
+		fmt.Print("Connecting to the printer " + printerIP + ".....")
 		client := sshConnect()
 		defer func(client *goph.Client) {
 			err := client.Close()
@@ -24,19 +26,15 @@ The "reboot" command is used to reboot the linux system of the printer.`,
 				fmt.Println("ERROR: Something went wrong - unable to complete the action")
 			}
 		}(client)
-		fmt.Println(getPrinterProperties(client))
-		if checkVersion(client, 5) {
-			fmt.Println("supported by ultituner: YES")
-			fmt.Println()
-		} else {
-			fmt.Println("supported by ultituner: NO, your printer or firmware is not supported")
-			os.Exit(1)
-		}
+		fmt.Println("done, connected")
 
-		fmt.Print("Rebooting...")
+		// Print the properties of the printer
+		printPrinterProperties(client)
+
+		// Reboot the printer
+		fmt.Print("Rebooting the printer.....")
 		sshCmd(client, "shutdown -r now")
-		fmt.Println("DONE")
-		fmt.Println("Printer is now starting up again.")
+		fmt.Println("done, printer is now starting up again")
 		fmt.Println()
 
 	},
