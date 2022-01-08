@@ -42,16 +42,18 @@ Note that you need to restart the printer after any configuration change. You ca
 
 		// Enable Active Leveling
 		if len(args) == 1 && args[0] == "on" {
+			fmt.Print("Enabling active leveling.....")
 			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.NEVER/self.__probing_mode = ProbeMode.DETAILED/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
-			fmt.Println("Active Leveling turned ON")
+			fmt.Println("done, turned ON")
 			if restartFlag {
 				restartGriffin(client)
 			}
 
 			//Disable Active Leveling
 		} else if len(args) == 1 && args[0] == "off" {
+			fmt.Print("Disabling active leveling.....")
 			sshCmd(client, "sed -i 's/self.__probing_mode = ProbeMode.DETAILED/self.__probing_mode = ProbeMode.NEVER/g' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
-			fmt.Println("Active Leveling turned OFF")
+			fmt.Println("done, turned OFF")
 			fmt.Println("IMPORTANT: Do a manual leveling from the menu before you start your first print job!")
 			if restartFlag {
 				restartGriffin(client)
@@ -59,11 +61,12 @@ Note that you need to restart the printer after any configuration change. You ca
 
 			// Fetch Active Leveling status
 		} else {
+			fmt.Print("Checking the status of active leveling.....")
 			result := sshCmd(client, "grep 'self.__probing_mode = ProbeMode.' /usr/share/griffin/griffin/printer/procedures/pre_and_post_print/auto_bed_level_adjust/alignZAxisProcedure.py")
 			if strings.Contains(result, "DETAILED") {
-				fmt.Println("Active Leveling is currently ENABLED")
+				fmt.Println("done, currently ENABLED")
 			} else {
-				fmt.Println("Active Leveling is currently DISABLED")
+				fmt.Println("done, currently DISABLED")
 			}
 		}
 

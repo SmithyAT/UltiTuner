@@ -57,5 +57,5 @@ func checkCompatibility(c *goph.Client, cmd string) {
 func restartGriffin(c *goph.Client) {
 	fmt.Print("Restarting griffin printer service.....")
 	sshCmd(c, "systemctl restart griffin.printer")
-	fmt.Println("done")
+	fmt.Println("done, wait a moment until the printer is ready again")
 }

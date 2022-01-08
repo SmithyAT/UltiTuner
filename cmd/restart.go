@@ -11,7 +11,7 @@ var restartCmd = &cobra.Command{
 	Args:                  cobra.MatchAll(cobra.ExactArgs(0)),
 	DisableFlagsInUseLine: true,
 	Short:                 "Do a restart of the printer service",
-	Long: `UltiTuner
+	Long: `UltiTuner - Restart
 
 The "restart" command is used to restart the griffin printer service.`,
 

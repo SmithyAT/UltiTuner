@@ -11,7 +11,7 @@ var rebootCmd = &cobra.Command{
 	Args:                  cobra.MatchAll(cobra.ExactArgs(0)),
 	DisableFlagsInUseLine: true,
 	Short:                 "Do a full reboot of the printer",
-	Long: `UltiTuner
+	Long: `UltiTuner - Reboot
 
 The "reboot" command is used to reboot the linux system of the printer.`,
 

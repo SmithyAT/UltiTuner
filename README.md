@@ -22,7 +22,9 @@ This tool uses ssh to connect to the printer, so you must first enable the "Deve
 For more information on each command, see the Example section below.
 
 - `leveling` - Enable or disable the active leveling on the printer
-- `cooldown` - Change the safeToTouch temperature
+- `safetotouch` - Change the safeToTouch temperature
+- `cooldown` - Enable or disable the cool-down stage
+- `sshserver`- Enable or disable the ssh daemon on the printer
 - `restart` - Do a soft restart of the printer
 - `reboot` - Do a full reboot of the printer
 
@@ -56,9 +58,9 @@ With the _on_ argument, you can turn it on again.
 
 `ultituner leveling on -p 192.168.0.23`
 
-### Cool Down
-The "cooldown" command checks or changes the safeToTouch temperature, which is used during the cool-down phase after the print job.
-The value needs to be between 40 and 100 degrees Celsius, and the value is the temperature at which point it is safe to touch the build plate.
+### SafeToTouch Temperature
+The "safetotouch" command checks or changes the safeToTouch temperature, which is used during the cool-down phase after the print job.
+The value needs to be between 40 and 200 degrees Celsius, and the value is the temperature at which point it is safe to touch the build plate.
 
 If you set the temperature to, i.e., 80, the cool-down phase finishes as soon as the bed temperature reaches 79 degrees Celsius.
 The higher the temperature, the faster the cool-down stage will end.
@@ -72,6 +74,25 @@ Check the current set temperature
 Change the temperature to 80 and restart the printer service
 
 `ultituner cooldown 80 -p 192.168.0.23 -r`
+
+### Cooldown 
+The "cooldown" command is an easy variant of the safetotouch command.
+With "on" the safeToTouch temperature is set to the default of 60, and with "off" the temperature is set to 200.  
+Without an argument, you get the current set temperature, and it is then identical to the "safetotouch" command.
+
+Enable the cool-down stage:
+`ultituner cooldown on -p 192.168.0.23 -r`
+
+Disable the cool-down stage:
+`ultituner cooldown off -p 192.168.0.23 -r`
+
+### SSH Server
+The "sshserver" command permanently enables the ssh daemon on the printer, independent of developer mode.
+It can be very helpful if you work with the firmware because the developer mode is just a flag, and the firmware starts the ssh daemon during startup.
+If you have an error in a file and the startup routine throws an exception, the printer is bricked because you can no longer shh into the printer and fix the problem.
+The ssh daemon is always available when enabling it permanently as the system default, regardless of the startup routines of the printer firmware.
+
+Remember that disabling the developer mode won't disable the ssh daemon anymore. If you want to turn it off again, you have to use UltiTuner again.
 
 ### Restart & Reboot
 Just restart the printer. Not the same as power cycling, but it restarts the printer service.

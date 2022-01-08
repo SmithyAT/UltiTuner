@@ -9,7 +9,7 @@ import (
 var printerIP string
 
 var rootCmd = &cobra.Command{
-	Version: "0.4",
+	Version: "0.5",
 	Use:     "ultituner",
 	Short:   "UltiTuner, the small helper tool",
 	Long: `UltiTuner - Written by Christian Schmied aka Smithy (https://github.com/SmithyAT/UltiTuner)
