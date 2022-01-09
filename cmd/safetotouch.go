@@ -9,19 +9,22 @@ import (
 )
 
 var safetotouchCmd = &cobra.Command{
-	Use:                   "safetotouch [temperature] -p <ip_address of the printer>",
+	Use:                   "safetotouch [temp 40..200] -p <ip_address of the printer>",
 	Args:                  cobra.MatchAll(cobra.MaximumNArgs(1)),
 	DisableFlagsInUseLine: true,
 	Short:                 "Check or change the safeToTouch temperature",
-	Long: `UltiTuner - Tune the safeToTouch Temperature
+	Long: `
+The "safetotouch" command checks or changes the safeToTouch temperature, which 
+is used during the post-print cool-down stage. The value needs to be between 
+40 and 200 degrees Celsius, and the value is the temperature at which point it 
+is safe to touch the build plate. 
 
-The "safetotouch" command checks or changes the safeToTouch temperature, which is used during the cool-down phase after the print job. 
-The value needs to be between 40 and 200 degrees Celsius, and the value is the temperature at which point it is safe to touch the build plate. 
+If you set the temperature to, i.e. 80, the cool-down stage finishes as soon 
+as the bed temperature reaches 79 degrees Celsius. The higher the temperature, 
+the faster the cool-down stage will end. 
 
-If you set the temperature to, i.e., 80, the cool-down phase finishes as soon as the bed temperature reaches 79 degrees Celsius. 
-The higher the temperature, the faster the cool-down stage will end. 
-
-Note that you need to restart the printer after any configuration change. You can use the "restart" command or set the "-r" flag to restart it automatically.`,
+Note that you must power cycle the printer for this change to take effect 
+or use the "-r" flag to restart automatically.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		restartFlag, _ := cmd.Flags().GetBool("restart")

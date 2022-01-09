@@ -10,9 +10,8 @@ var rebootCmd = &cobra.Command{
 	Use:                   "reboot -p <ip_address of the printer>",
 	Args:                  cobra.MatchAll(cobra.ExactArgs(0)),
 	DisableFlagsInUseLine: true,
-	Short:                 "Do a full reboot of the printer",
-	Long: `UltiTuner - Reboot
-
+	Short:                 "Reboot the printer",
+	Long: `
 The "reboot" command is used to reboot the linux system of the printer.`,
 
 	Run: func(cmd *cobra.Command, args []string) {

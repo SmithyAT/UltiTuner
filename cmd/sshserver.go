@@ -12,14 +12,21 @@ var sshserverCmd = &cobra.Command{
 	ValidArgs:             []string{"on", "off"},
 	DisableFlagsInUseLine: true,
 	Short:                 "Enable or disable the ssh daemon on the printer",
-	Long: `UltiTuner - Enable/Disable the SSH Daemon
+	Long: `
+The "sshserver" command permanently enables the ssh daemon on the printer, 
+independent of developer mode. It can be very helpful if you work with the 
+firmware because the developer mode is just a flag, and the firmware starts 
+the ssh daemon during startup. 
 
-The "sshserver" command permanently enables the ssh daemon on the printer, independent of developer mode.
-It can be very helpful if you work with the firmware because the developer mode is just a flag, and the firmware starts the ssh daemon during startup.
-If you have an error in a file and the startup routine throws an exception, the printer is bricked because you can no longer shh into the printer and fix the problem.
-The ssh daemon is always available when enabling it permanently as the system default, regardless of the startup routines of the printer firmware.
+If you have an error in a file and the startup routine throws an exception, 
+the printer is bricked because you can no longer ssh into the printer to fix 
+the problem.
 
-Remember that disabling the developer mode won't disable the ssh daemon anymore. If you want to turn it off again, you have to use UltiTuner again.`,
+The ssh daemon is always available when enabling it permanently at system start, 
+regardless of the startup routines of the printer firmware.
+
+Remember that disabling the developer mode won't disable the ssh daemon anymore. 
+If you want to disable ssh at all, you have to use UltiTuner again.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 

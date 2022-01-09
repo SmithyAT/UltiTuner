@@ -1,114 +1,125 @@
-# UltiTuner
-UltiTuner is a small helper tool to configure functions for Ultimaker S-Line printers, which are not available via the printers' menu.
+# UltiTuner - the Swiss army knife for Ultimaker printers
+UltiTuner is a helper tool to configure functions for network-enabled Ultimaker printers (UM3, S3, S5), which are not available via the printers' menu.
 
-We all love our Ultimaker printers, but sometimes we want to do things that are not officially supported or designed in another way that doesn't fit your personal workflow. And that's where UltiTuner kicks in, and it tries to fill these gaps and remove some restrictions from the official firmware.
+We all love our Ultimaker printers, but sometimes we want to do things that are not officially supported or designed in another way that doesn't fit your personal workflow. And that's where UltiTuner kicks in, to fill these gaps and remove some restrictions from the official firmware.
 
-All changes you make with this tool are easily reversible. It doesn't use a different firmware image, and it just modifies some parameters.
+All changes you make with this tool are easily reversible. It doesn't use a different firmware image, it just modifies some files or parameters.
 
 ## Disclaimer
-The software was created and tested with utmost care. But since non-official methods are used to change the firmware, it could happen under certain circumstances that the printer no longer works as usual. Neither I personally nor Ultimaker is responsible for this. **USE THIS TOOL AT YOUR OWN RISK AND RESPONSIBILITY**
+The software was created and tested with the utmost care. But if something goes wrong, neither Ultimaker nor I am responsible if the printer no longer works as usual or breaks.
+
+**USE THIS TOOL AT YOUR OWN RISK AND RESPONSIBILITY**
 
 ## Supported printer models
-This tool supports the Ultimaker-S3 and Ultimaker-S5 printers, also called the S-line printers. The much older UM3 is not supported because it uses a slightly different firmware version. But if there is a need, I can look into it. Just raise a feature request.
+This tool supports the Ultimaker-S3 and Ultimaker-S5 printers, also called the S-line printers. The much older UM3 is currently not supported because it uses a slightly different firmware version and not all functions are available or needed for the UM3. 
 
-Also, not all firmware versions are supported. Firmware v6.x and v7.x are fully supported. Older versions may work but are not tested much so far. I had a chance to get some tests with v5.7.2, which seems to work, but older versions are not supported and are excluded from working with this tool.
+Not all firmware versions are supported. Firmware v6.x and v7.x are fully supported. Older versions may work but are not tested much so far. I had a chance to get some tests with v5.7.2, which seems to work.
 
-The tool checks the printer model and the firmware version to avoid any damage or malfunctions. If it detects any unsupported printer, you get a notice that your printer is not supported, and you cannot use this tool.
+Each command has a function included, to check if the printer and firmware is compatible with that action to avoid any malfunctions. If it detects any incompatible printer, you get a notice that your printer is not supported, and you cannot use this command.
 
 ## Prerequisites
 This tool uses ssh to connect to the printer, so you must first enable the "Developer Mode" in the printer menu.
 
 ## Available Commands
-For more information on each command, see the Example section below.
+For more information on each command, see the command reference section below with examples.
 
-- `leveling` - Enable or disable the active leveling on the printer
+- `leveling` - Enable or disable the active leveling behavior
 - `safetotouch` - Change the safeToTouch temperature
-- `cooldown` - Enable or disable the cool-down stage
+- `cooldown` - Enable or disable the post-print cool-down stage
 - `sshserver`- Enable or disable the ssh daemon on the printer
-- `restart` - Do a soft restart of the printer
-- `reboot` - Do a full reboot of the printer
-
+- `restart` - Restart the griffin printer service
+- `reboot` - Reboot the printer
 
 ## Flags
-You can get more information for each command when you add the --help (or -h) flag to the end.
-
+### -p
 A mandatory flag is the `-p` or `--printer-ip` flag, where you have to specify the IP address of your printer.
+The IP address is shown in the display of the printer after you have enabled the developer mode.
 
-The `-r` or `restart` flag is used to auto-restart after a command has changed something.
+### -r
+You must power cycle the printer to take effect any configuration changes.
+But you can use the `-r` or `--restart` flag with the command to restart it automatically. Only the griffin printer service will be restarted, which is a bit faster than a full reboot or power cycle.
 
-To check the version of UltiTuner run `ultituner --version`
+### -h
+To get more information for each command you can add the `-h` or `-help` flag.
 
-## Command reference
+## Command reference & examples
 Depending on your operating system, the executable is either ultituner or ultituner.exe. In the following examples, we use ultituner.
-### Active Leveling
-This command connects to the printer and checks the current active leveling configuration.
-You need to restart the printer after any configuration change. You can use the "restart" command or set the "-r" flag to restart it automatically.
 
+Note that you must power cycle the printer for most of these changes to take effect or use the "-r" flag to restart automatically.
+
+### Active Leveling
+With the `leveling` command, you can check, enable or disable the active leveling behavior of your printer.
+
+Note that you must do a manual leveling from the printer menu before you start your first print job!
+
+#### Check the current behavior
 `ultituner leveling -p 192.168.0.23`
 
-With the _off_ argument, you can turn off active leveling.
-
+#### Disable active leveling 
 `ultituner leveling off -p 192.168.0.23`
 
-Automatically restart the printer service after disabling active leveling with the "-r" flag at the end.
+#### Enable active leveling and auto-restart the printer
+`ultituner leveling on -p 192.168.0.23 -r`
 
-`ultituner leveling off -p 192.168.0.23 -r`
-
-With the _on_ argument, you can turn it on again.
-
-`ultituner leveling on -p 192.168.0.23`
 
 ### SafeToTouch Temperature
-The "safetotouch" command checks or changes the safeToTouch temperature, which is used during the cool-down phase after the print job.
-The value needs to be between 40 and 200 degrees Celsius, and the value is the temperature at which point it is safe to touch the build plate.
+The `safetotouch` command checks or changes the safeToTouch temperature, which is used during the post-print cool-down stage. The value needs to be between 40 and 200 degrees Celsius, and the value is the temperature at which point it is safe to touch the build plate.
 
-If you set the temperature to, i.e., 80, the cool-down phase finishes as soon as the bed temperature reaches 79 degrees Celsius.
-The higher the temperature, the faster the cool-down stage will end.
+If you set the temperature to, i.e. 80, the cool-down stage finishes as soon as the bed temperature reaches 79 degrees Celsius. The higher the temperature, the faster the cool-down stage will end.
 
-You need to restart the printer after any configuration change. You can use the "restart" command or set the "-r" flag to restart it automatically.
-
-Check the current set temperature
-
+#### Check the current set temperature
 `ultituner cooldown -p 192.168.0.23`
 
-Change the temperature to 80 and restart the printer service
-
+#### Change the temperature to 80 and restart the printer service
 `ultituner cooldown 80 -p 192.168.0.23 -r`
 
+
 ### Cooldown 
-The "cooldown" command is an easy variant of the safetotouch command.
-With "on" the safeToTouch temperature is set to the default of 60, and with "off" the temperature is set to 200.  
-Without an argument, you get the current set temperature, and it is then identical to the "safetotouch" command.
+The `cooldown` command is a simplified variant of the safetotouch command.
+With `on` the safeToTouch temperature is set to the default of 60, and with `off` the temperature is set to 200, meaning that the cool-down stage at the end of a print job immediately ends.
 
-Enable the cool-down stage:
-`ultituner cooldown on -p 192.168.0.23 -r`
+Without an argument `[on|off]` you get the current set temperature, which is identical to the `safetotouch` command.
 
-Disable the cool-down stage:
+#### Disable the cool-down stage and restart the printer service
 `ultituner cooldown off -p 192.168.0.23 -r`
 
+#### Enable the cool-down stage
+`ultituner cooldown on -p 192.168.0.23`
+
+
 ### SSH Server
-The "sshserver" command permanently enables the ssh daemon on the printer, independent of developer mode.
-It can be very helpful if you work with the firmware because the developer mode is just a flag, and the firmware starts the ssh daemon during startup.
-If you have an error in a file and the startup routine throws an exception, the printer is bricked because you can no longer shh into the printer and fix the problem.
-The ssh daemon is always available when enabling it permanently as the system default, regardless of the startup routines of the printer firmware.
+The `sshserver` command permanently enables the ssh daemon on the printer, independent of developer mode. It can be very helpful if you work with the firmware because the developer mode is just a flag, and the firmware starts the ssh daemon during startup.
 
-Remember that disabling the developer mode won't disable the ssh daemon anymore. If you want to turn it off again, you have to use UltiTuner again.
+If you have an error in a file and the startup routine throws an exception, the printer is bricked because you can no longer ssh into the printer to fix the problem. The ssh daemon is always available when enabling it permanently at system start, regardless of the startup routines of the printer firmware.
 
-### Restart & Reboot
-Just restart the printer. Not the same as power cycling, but it restarts the printer service.
+Remember that disabling the developer mode won't disable the ssh daemon anymore. If you want to disable ssh at all, you have to use UltiTuner again.
+
+#### Enable the SSH daemon
+`ultituner sshserver on -p 192.168.0.23`
+
+#### Disable the SSH daemon
+`ultituner sshserver off -p 192.168.0.23`
+
+
+### Restart
+Is used to restart the griffin printer service. It is enough to restart the printer service to take effect configuration changes instead of a full reboot.
 
 `ultituner restart -p 192.168.0.23`
 
-Or do a complete reboot of the linux system of the printer.
+
+### Reboot
+Is used to reboot the linux system of the printer.
 
 `ultituner reboot -p 192.168.0.23`
 
-## Inside UltiTuner
-UltiTuner is not magic. According to the selected command, it modifies some parameters directly in some firmware files. You can do everything with ssh and the vi editor, but it is easier and more failure-proof for most users to have a tool that does these steps, mainly when someone is not used to using Linux.
 
-Additionally, the tool takes care of different firmware versions because some files have changed or parameters are on other locations. Not all firmware versions are supported because I no longer have access to this old firmware. Maybe version 4 or versions older than 5.7.2 would also be working, but these old firmware versions are not supported due to the lack of testing capabilities.
+## Update notification
+There are ongoing improvements and bug fixes to this tool. Therefore an update checker is implemented, checking for new releases on GitHub once per day.
+
+The tool creates an additional file (ultituner_upd-cache.json) along with the ultituner executable to avoid an update check on every run. If you delete the file accidentally, it will be automatically created again at the next start.
+
 
 ## Upcoming features
-- Reset the "clean the build plate" message if you had aborted a print job before it began.
-- Enable SSH independent from the developer mode
-- ??? open for ideas
+- UM3 support
+- Reset the message if you have aborted a print job before it has started to print.
+- ??? I am open for ideas

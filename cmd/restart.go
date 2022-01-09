@@ -10,10 +10,11 @@ var restartCmd = &cobra.Command{
 	Use:                   "restart -p <ip_address of the printer>",
 	Args:                  cobra.MatchAll(cobra.ExactArgs(0)),
 	DisableFlagsInUseLine: true,
-	Short:                 "Do a restart of the printer service",
-	Long: `UltiTuner - Restart
-
-The "restart" command is used to restart the griffin printer service.`,
+	Short:                 "Restart the griffin printer service",
+	Long: `
+The "restart" command is used to restart the griffin printer service.
+It is enough to restart the printer service to take effect configuration 
+changes instead of a full reboot.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 
