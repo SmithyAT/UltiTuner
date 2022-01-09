@@ -20,6 +20,9 @@ Each command has a function included, to check if the printer and firmware is co
 ## Prerequisites
 This tool uses ssh to connect to the printer, so you must first enable the "Developer Mode" in the printer menu.
 
+## Installation
+UltiTuner is just a CLI application, there is no need to install it. Just open a terminal or cmd window and run the application.
+
 ## Available Commands
 For more information on each command, see the command reference section below with examples.
 
