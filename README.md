@@ -1,5 +1,5 @@
 # UltiTuner - the Swiss army knife for Ultimaker printers
-UltiTuner is a helper tool to configure functions for network-enabled Ultimaker printers (UM3, S3, S5), which are not available via the printers' menu.
+UltiTuner is a helper tool to configure functions for network-enabled Ultimaker printers (S3, S5), which are not available via the printers' menu.
 
 We all love our Ultimaker printers, but sometimes we want to do things that are not officially supported or designed in another way that doesn't fit your personal workflow. And that's where UltiTuner kicks in, to fill these gaps and remove some restrictions from the official firmware.
 
