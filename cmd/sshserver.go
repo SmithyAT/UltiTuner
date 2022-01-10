@@ -36,7 +36,8 @@ If you want to disable ssh at all, you have to use UltiTuner again.`,
 		defer func(client *goph.Client) {
 			err := client.Close()
 			if err != nil {
-				fmt.Println("ERROR: Something went wrong - unable to complete the action")
+				fmt.Println()
+				fmt.Println("ERROR: Something went wrong - unable to close the ssh connection")
 			}
 		}(client)
 		fmt.Println("done, connected")
@@ -75,8 +76,6 @@ If you want to disable ssh at all, you have to use UltiTuner again.`,
 				fmt.Println("done, " + result)
 			}
 		}
-
-		fmt.Println()
 
 	},
 }

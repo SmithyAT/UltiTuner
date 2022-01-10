@@ -29,6 +29,7 @@ For more information on each command, see the command reference section below wi
 - `leveling` - Enable or disable the active leveling behavior
 - `safetotouch` - Change the safeToTouch temperature
 - `cooldown` - Enable or disable the post-print cool-down stage
+- `clearabort` - Clear the waiting state after aborting a print job
 - `sshserver`- Enable or disable the ssh daemon on the printer
 - `restart` - Restart the griffin printer service
 - `reboot` - Reboot the printer
@@ -88,6 +89,17 @@ Without an argument `[on|off]` you get the current set temperature, which is ide
 
 #### Enable the cool-down stage
 `ultituner cooldown on -p 192.168.0.23`
+
+
+### Clear Abort, Awaiting Clean-Up
+When you abort a print job in an early stage, so during the heat-up phase, before the print actually starts, the printer is asking you after the abort if you want to retry the job or not. In the DigitalFactory you see a message like "Aborted, Awaiting Clean-Up". You cannot start another print job until someone presses the button on the printer's display.
+
+With the `clearabort` command, you can clear the message on the printer's display, and the printer is ready again to accept new print jobs.
+
+Notice that it is not working when the printer has already started to print.
+
+#### Clear the message
+`ultituner clearabort -p 192.168.0.23`
 
 
 ### SSH Server

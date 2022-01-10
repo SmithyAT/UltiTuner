@@ -12,7 +12,8 @@ import (
 func sshConnect() *goph.Client {
 	client, err := goph.NewUnknown("root", printerIP, goph.Password("ultimaker"))
 	if err != nil {
-		fmt.Println("ERROR: Unable to connect to your printer! Check if the developer mode is enabled and if the ip address it correct.")
+		fmt.Println("error, unable to connect to printer")
+		fmt.Println("Check if the developer mode is enabled and if the ip address it correct.")
 		os.Exit(1)
 	}
 	return client
@@ -22,7 +23,9 @@ func sshConnect() *goph.Client {
 func sshCmd(c *goph.Client, cmd string) string {
 	out, err := c.Run(cmd)
 	if err != nil {
+		fmt.Println()
 		fmt.Println("ERROR: Something went wrong - unable to complete the action.")
+		fmt.Println(err)
 		os.Exit(1)
 	}
 	result := string(out)

@@ -24,7 +24,7 @@ changes instead of a full reboot.`,
 		defer func(client *goph.Client) {
 			err := client.Close()
 			if err != nil {
-				fmt.Println("ERROR: Something went wrong - unable to complete the action")
+				fmt.Println("ERROR: Something went wrong - unable to close the ssh connection")
 			}
 		}(client)
 		fmt.Println("done, connected")
@@ -34,7 +34,6 @@ changes instead of a full reboot.`,
 
 		// Restart the griffin service
 		restartGriffin(client)
-		fmt.Println()
 
 	},
 }

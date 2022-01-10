@@ -22,7 +22,7 @@ The "reboot" command is used to reboot the linux system of the printer.`,
 		defer func(client *goph.Client) {
 			err := client.Close()
 			if err != nil {
-				fmt.Println("ERROR: Something went wrong - unable to complete the action")
+				fmt.Println("ERROR: Something went wrong - unable to close the ssh connection")
 			}
 		}(client)
 		fmt.Println("done, connected")
@@ -34,7 +34,6 @@ The "reboot" command is used to reboot the linux system of the printer.`,
 		fmt.Print("Rebooting the printer.....")
 		sshCmd(client, "shutdown -r now")
 		fmt.Println("done, printer is now starting up again")
-		fmt.Println()
 
 	},
 }
