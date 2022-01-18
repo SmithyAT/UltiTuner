@@ -142,6 +142,6 @@ The tool creates an additional file (ultituner_upd-cache.json) along with the ul
 
 ## Upcoming features
 - [ ] UM3 support
-- [ ] Reset the message if you have aborted a print job before it has started to print.
-- [x] ~~LED switch~~
+- [x] ~~Reset the message if you have aborted a print job before it has started to print.~~
+- [ ] LED switch
 - [ ] I am open for ideas
