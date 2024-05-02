@@ -3,6 +3,8 @@
 ![release date](https://img.shields.io/github/release-date/SmithyAT/UltiTuner?color=blue)
 ![release version](https://img.shields.io/github/v/release/SmithyAT/UltiTuner)
 
+| :exclamation:  I'm sorry to say that UltiTuner is no longer being developed because I no longer own any Ultimaker printers. But don't worry! Everyone is welcome to create their own fork of UltiTuner and add new features.   |
+|----------------------------------------------|
 
 # UltiTuner - the Swiss army knife for Ultimaker printers
 UltiTuner is a helper tool to configure functions for network-enabled Ultimaker printers (S3, S5), which are not available via the printers' menu.
